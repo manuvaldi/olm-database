@@ -1,0 +1,101 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  schedule:
+    - cron:  '0 5 * * *'
+  
+  workflow_dispatch:
+
+jobs:
+  build-catalog:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        ocversion: ["4.5", "4.6"]
+        catalog: ["redhat-operators","certified-operators","redhat-marketplace","community-operators"]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false 
+          fetch-depth: 0 
+          ref: main
+          
+        
+      - name: Install OpenShift Client 
+        uses: redhat-actions/oc-installer@v1
+        with:
+          oc_version: "${{ matrix.ocversion }}"
+
+
+      - name: Install SQlite
+        run: sudo apt install sqlite3
+          
+      - name: Print out OC client version
+        run: oc version 
+
+      - name: Create pull-secret
+        env:
+          PULLSECRET: ${{ secrets.QUAY }}
+        run: echo "$PULLSECRET" > pull-secret.json 
+        
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +%s)"        
+
+      - name: Get current date formated
+        env:
+          timestamp: ${{ steps.date.outputs.date }}         
+        id: dateformated
+        run: echo "::set-output name=dateformated::$(date --date="@$timestamp" '+%Y%m%d%H%M')"    
+        
+      - name: Catalog Build and Push to Quay
+        env:
+          dateformated: ${{ steps.dateformated.outputs.dateformated }}   
+        run: |
+          oc adm catalog build \
+            --appregistry-org="${{ matrix.catalog }}" \
+            --from=registry.redhat.io/openshift4/ose-operator-registry:v${{ matrix.ocversion }} \
+            --to=quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog }}-${dateformated} \
+            --filter-by-os=linux/amd64 \
+            -a pull-secret.json
+
+      - name: Catalog Mirror
+        env:
+          dateformated: ${{ steps.dateformated.outputs.dateformated }}         
+        run: |
+          rm -Rf *-rh; mkdir database-rh
+          oc adm catalog mirror \
+            quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog }}-${dateformated}  \
+            myregistry.com \
+            --manifests-only  \
+            --to-manifests="$(pwd)/manifest-rh" \
+            --path="/:$(pwd)/database-rh" \
+            --filter-by-os=linux/amd64 \
+            -a pull-secret.json
+            
+      - name: Extract operators versions from bundles.db
+        env:
+          timestamp: ${{ steps.date.outputs.date }}
+          dateformated: ${{ steps.dateformated.outputs.dateformated }}         
+        run: |
+          dirfile=$(date --date="@$timestamp" '+%Y')/$(date --date="@$timestamp" '+%m')
+          mkdir -p $dirfile
+          listfile="$dirfile/v${{ matrix.ocversion }}-${{ matrix.catalog }}-$(date --date="@$timestamp" '+%Y%m%d%H%M').txt"
+          echo "# IMAGE: quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog }}-${dateformated}" > $listfile
+          sqlite3 database-rh/bundles.db "select operatorbundle_name from related_image group by operatorbundle_name;" >> $listfile
+          cat $listfile
+          rm -Rf *-rh; mkdir database-rh
+   
+ 
+      - name: Commit & Push operator list             
+        uses: actions-x/commit@v2
+        with:
+          branch: main
+          message: " Added operators list for v${{ matrix.ocversion }}-${{ matrix.catalog }}-${{ steps.dateformated.outputs.dateformated }} "
