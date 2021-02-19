@@ -1,6 +1,6 @@
 # olm-database
 
-This repo is an automatization for warehousing the redhat operator catalogs images. I try to solve this BZ: https://bugzilla.redhat.com/show_bug.cgi?id=1929775
+This repo is an automatization for warehousing the Red Hat operator catalogs images. I try to solve this BZ: https://bugzilla.redhat.com/show_bug.cgi?id=1929775
 
 Every day a job runs to archive the current catalogs images for 
  - 4.5 and 4.6
