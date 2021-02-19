@@ -31,6 +31,6 @@ Example with structure and relation between catalog list file and container imag
 # How to use this repo:
 1) Search the operator and version which you are interested in the Github search box in this repo  
 2) Find the file in the repo thats includes your "operator:version"
-2) Open the file, and in the first line you will fine the operator reference. Example: `# IMAGE: quay.io/mvalledi/olm-cicd:v4.5-certified-operators-202102181515`
+2) Open the file, and in the first line you will find the operator reference. Example: `# IMAGE: quay.io/mvalledi/olm-cicd:v4.5-certified-operators-202102181515`
 
 
