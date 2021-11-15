@@ -27,12 +27,11 @@ jobs:
           fetch-depth: 0 
           ref: main
           
-        
-      - name: Install OpenShift Client 
-        uses: redhat-actions/oc-installer@v1
-        with:
-          oc_version: "${{ matrix.ocversion }}"
 
+      - name: Install CLI tools from OpenShift Mirror
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: "${{ matrix.ocversion }}"
 
       - name: Install SQlite
         run: sudo apt install sqlite3
