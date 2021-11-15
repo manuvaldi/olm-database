@@ -16,7 +16,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        ocversion: ["4.5", "4.6"]
+        ocversion: ["4.6","4.7","4.8","4.9"]
         catalog: ["redhat-operators","certified-operators","redhat-marketplace","community-operators"]
 
     steps:
