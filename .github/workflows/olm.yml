@@ -12,7 +12,7 @@ jobs:
       - name: Generate Matrix
         id: generate-matrix
         run: |
-          VERSIONS="[ $(curl -s https://api.github.com/repos/openshift/cincinnati-graph-data/contents/channels | jq .[].name | xargs -n1 echo | grep -e '^stable' | sed 's/\.yaml//g' |awk -F'-' '{print $2}' | sort -u | tail -n5 | awk -vORS=, '{ print \" \" $1 }' | sed 's/,$/\n/') ]"
+          VERSIONS="[ $(curl -s https://api.github.com/repos/openshift/cincinnati-graph-data/contents/channels | jq .[].name | xargs -n1 echo | grep -e '^stable' | sed 's/\.yaml//g' |awk -F'-' '{print $2}' | sort -u | tail -n5 | awk -vORS=, '{ print " " $1 }' | sed 's/,$/\n/') ]"
           echo ::set-output name=versions::${VERSIONS}
   
   build-catalog:
