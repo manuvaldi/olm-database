@@ -59,7 +59,6 @@ jobs:
         env:
           dateformated: ${{ steps.dateformated.outputs.dateformated }}   
         run: |
-          cat pull-secret.json | base64 
           case "${{ matrix.ocversion }}" in
             4.6|4.7)
               oc adm catalog build \
