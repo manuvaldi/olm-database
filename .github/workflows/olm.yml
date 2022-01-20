@@ -20,7 +20,6 @@ jobs:
           persist-credentials: false 
           fetch-depth: 0 
           ref: main
-          
 
       - name: Install CLI tools from OpenShift Mirror
         uses: redhat-actions/openshift-tools-installer@v1
@@ -52,23 +51,23 @@ jobs:
         env:
           dateformated: ${{ steps.dateformated.outputs.dateformated }}   
         run: |
-              case "${{ matrix.ocversion }}" in
-                4.6|4.7)
-                  oc adm catalog build \
-                    --appregistry-org="${{ matrix.catalog.catalog }}" \
-                    --from=registry.redhat.io/openshift4/ose-operator-registry:v${{ matrix.ocversion }} \
-                    --to=quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated} \
-                    --filter-by-os=linux/amd64 \
-                    -a pull-secret.json
-                  ;;
-                *)
-                  oc image mirror \
-                    ${{ matrix.catalog.image }}:v${{ matrix.ocversion }} \
-                    quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated} \
-                    --filter-by-os=linux/amd64 \
-                    -a pull-secret.json
-                  ;;
-              esac        
+          case "${{ matrix.ocversion }}" in
+            4.6|4.7)
+              oc adm catalog build \
+                --appregistry-org="${{ matrix.catalog.catalog }}" \
+                --from=registry.redhat.io/openshift4/ose-operator-registry:v${{ matrix.ocversion }} \
+                --to=quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated} \
+                --filter-by-os=linux/amd64 \
+                -a pull-secret.json
+              ;;
+            *)
+              oc image mirror \
+                ${{ matrix.catalog.image }}:v${{ matrix.ocversion }} \
+                quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated} \
+                --filter-by-os=linux/amd64 \
+                -a pull-secret.json
+              ;;
+          esac        
 
         
       - name: Catalog Mirror
