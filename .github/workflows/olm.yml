@@ -10,8 +10,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        #ocversion: ["4.6","4.7","4.8","4.9"]
-        ocversion: ["4.8","4.9"]
+        ocversion: ["4.6","4.7","4.8","4.9"]
         catalog: 
           - catalog: "redhat-operators"
             image: "registry.redhat.io/redhat/redhat-operator-index"
