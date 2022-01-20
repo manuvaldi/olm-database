@@ -83,7 +83,7 @@ jobs:
         run: |
           rm -Rf *-rh; mkdir database-rh
           oc adm catalog mirror \
-            quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog }}-${dateformated}  \
+            quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated}  \
             myregistry.com \
             --manifests-only  \
             --to-manifests="$(pwd)/manifest-rh" \
@@ -98,8 +98,8 @@ jobs:
         run: |
           dirfile=$(date --date="@$timestamp" '+%Y')/$(date --date="@$timestamp" '+%m')
           mkdir -p $dirfile
-          listfile="$dirfile/v${{ matrix.ocversion }}-${{ matrix.catalog }}-$(date --date="@$timestamp" '+%Y%m%d%H%M').txt"
-          echo "# IMAGE: quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog }}-${dateformated}" > $listfile
+          listfile="$dirfile/v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-$(date --date="@$timestamp" '+%Y%m%d%H%M').txt"
+          echo "# IMAGE: quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated}" > $listfile
           sqlite3 database-rh/bundles.db "select operatorbundle_name from related_image group by operatorbundle_name;" >> $listfile
           cat $listfile
           rm -Rf *-rh; mkdir database-rh
@@ -109,4 +109,4 @@ jobs:
         uses: actions-x/commit@v2
         with:
           branch: main
-          message: " Added operators list for v${{ matrix.ocversion }}-${{ matrix.catalog }}-${{ steps.dateformated.outputs.dateformated }} "
+          message: " Added operators list for v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${{ steps.dateformated.outputs.dateformated }} "
