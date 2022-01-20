@@ -18,7 +18,7 @@ jobs:
       matrix:
         ocversion: ["4.6","4.7","4.8","4.9"]
         catalog: ["redhat-operators","certified-operators","redhat-marketplace","community-operators"]
-
+        catalogs_images: [ {catalog: "redhat-operators", image: "registry.redhat.io/redhat/redhat-operator-index"}, {catalog: "certified-operators", image: "registry.redhat.io/redhat/certified-operator-index"}, {catalog: "redhat-marketplace", image: "registry.redhat.io/redhat/redhat-marketplace-index"}, {catalog: "community-operators", image:"registry.redhat.io/redhat/community-operator-index"} ]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -58,13 +58,25 @@ jobs:
         env:
           dateformated: ${{ steps.dateformated.outputs.dateformated }}   
         run: |
-          oc adm catalog build \
-            --appregistry-org="${{ matrix.catalog }}" \
-            --from=registry.redhat.io/openshift4/ose-operator-registry:v${{ matrix.ocversion }} \
-            --to=quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog }}-${dateformated} \
-            --filter-by-os=linux/amd64 \
-            -a pull-secret.json
+              case "${{ matrix.ocversion }}" in
+                4.6|4.7)
+                  oc adm catalog build \
+                    --appregistry-org="${{ matrix.catalog.catalog }}" \
+                    --from=registry.redhat.io/openshift4/ose-operator-registry:v${{ matrix.ocversion }} \
+                    --to=quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated} \
+                    --filter-by-os=linux/amd64 \
+                    -a pull-secret.json
+                  ;;
+                *)
+                  oc image mirror \
+                    ${{ matrix.catalog.image }}:v${{ matrix.ocversion }} \
+                    quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated} \
+                    --filter-by-os=linux/amd64 \
+                    -a pull-secret.json
+                  ;;
+              esac        
 
+        
       - name: Catalog Mirror
         env:
           dateformated: ${{ steps.dateformated.outputs.dateformated }}         
