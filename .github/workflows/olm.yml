@@ -59,16 +59,10 @@ jobs:
                 --to=quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated} \
                 --filter-by-os=linux/amd64 \
                 -a pull-secret.json
-              ;;
+            ;;
             *)
-              oc image mirror \
-                ${{ matrix.catalog.image }}:v${{ matrix.ocversion }} \
-                quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated} \
-                --filter-by-os=linux/amd64 \
-                -a pull-secret.json
-              ;;
+            ;;
           esac        
-
         
       - name: Catalog Mirror
         env:
