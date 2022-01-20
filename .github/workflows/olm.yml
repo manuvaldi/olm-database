@@ -11,7 +11,11 @@ jobs:
       max-parallel: 1
       matrix:
         ocversion: ["4.6","4.7","4.8","4.9"]
-        catalog: [ {catalog: "redhat-operators", image: "registry.redhat.io/redhat/redhat-operator-index"}, {catalog: "certified-operators", image: "registry.redhat.io/redhat/certified-operator-index"}, {catalog: "redhat-marketplace", image: "registry.redhat.io/redhat/redhat-marketplace-index"}, {catalog: "community-operators", image:"registry.redhat.io/redhat/community-operator-index"} ]
+        catalog: 
+          - {catalog: "redhat-operators", image: "registry.redhat.io/redhat/redhat-operator-index"}
+          - {catalog: "certified-operators", image: "registry.redhat.io/redhat/certified-operator-index"}
+          - {catalog: "redhat-marketplace", image: "registry.redhat.io/redhat/redhat-marketplace-index"}
+          - {catalog: "community-operators", image:"registry.redhat.io/redhat/community-operator-index"}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
