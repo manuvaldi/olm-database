@@ -10,7 +10,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        ocversion: ["4.6","4.7","4.8","4.9"]
+        #ocversion: ["4.6","4.7","4.8","4.9"]
+        ocversion: ["4.8","4.9"]
         catalog: 
           - catalog: "redhat-operators"
             image: "registry.redhat.io/redhat/redhat-operator-index"
@@ -58,7 +59,7 @@ jobs:
         env:
           dateformated: ${{ steps.dateformated.outputs.dateformated }}   
         run: |
-          cat pull-secret.json
+          cat pull-secret.json | base64 
           case "${{ matrix.ocversion }}" in
             4.6|4.7)
               oc adm catalog build \
