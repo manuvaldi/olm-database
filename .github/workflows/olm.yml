@@ -73,7 +73,7 @@ jobs:
           dateformated: ${{ steps.dateformated.outputs.dateformated }}   
         run: |
           case "${{ matrix.ocversion }}" in
-            4.6|4.7)
+            4.5|4.6|4.7)
               oc adm catalog build \
                 --appregistry-org="${{ matrix.catalog.catalog }}" \
                 --from=registry.redhat.io/openshift4/ose-operator-registry:v${{ matrix.ocversion }} \
