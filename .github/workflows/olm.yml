@@ -113,7 +113,7 @@ jobs:
           mkdir -p $dirfile
           listfile="$dirfile/v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-$(date --date="@$timestamp" '+%Y%m%d%H%M').txt"
           echo "# IMAGE: quay.io/mvalledi/olm-cicd:v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${dateformated}" > $listfile
-          sqlite3 database-rh/bundles.db "select operatorbundle_name from related_image group by operatorbundle_name;" 2>/dev/null >> $listfile
+          sqlite3 database-rh/bundles.db "select operatorbundle_name from related_image group by operatorbundle_name;" 2>/dev/null >> $listfile || \
           sqlite3 database-rh/database/index.db "select operatorbundle_name from related_image group by operatorbundle_name;" 2>/dev/null >> $listfile
           cat $listfile
           rm -Rf *-rh; mkdir database-rh
