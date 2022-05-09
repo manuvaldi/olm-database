@@ -116,17 +116,21 @@ jobs:
           sqlite3 database-rh/bundles.db "select operatorbundle_name from related_image group by operatorbundle_name;" 2>/dev/null >> $listfile || \
           sqlite3 database-rh/database/index.db "select operatorbundle_name from related_image group by operatorbundle_name;" 2>/dev/null >> $listfile
           cat $listfile
-          rm -Rf *-rh; mkdir database-rh
+          rm -Rf *-rh
           ls -la 
    
 #      - uses: actions/checkout@v3
       - run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          #git config user.name github-actions
+          #git config user.email github-actions@github.com
           #git pull
+          echo "git diff: -->"
           git diff
+          echo "git add . -->"
           git add .
+          echo "git commit -->"
           git commit -m " Added operators list for v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${{ steps.dateformated.outputs.dateformated }} "
+          echo "git push -->"
           git push
  
 #      - name: Commit & Push operator list             
