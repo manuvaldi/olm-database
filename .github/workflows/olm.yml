@@ -43,7 +43,7 @@ jobs:
           ref: main
           
       - name: Fix repo
-        run:  git config --global --add safe.directory .
+        run:  git config --global --add safe.directory "$GITHUB_WORKSPACE"
         
       - name: Install CLI tools from OpenShift Mirror
         uses: redhat-actions/openshift-tools-installer@v1
