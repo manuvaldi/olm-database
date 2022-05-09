@@ -36,14 +36,14 @@ jobs:
             image: "registry.redhat.io/redhat/community-operator-index"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           persist-credentials: false 
           fetch-depth: 0 
           ref: main
           
       - name: Fix repo
-        run:  git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run:  git config --global --add safe.directory /github/workspace
         
       - name: Install CLI tools from OpenShift Mirror
         uses: redhat-actions/openshift-tools-installer@v1
@@ -123,7 +123,7 @@ jobs:
    
  
       - name: Commit & Push operator list             
-        uses: actions-x/commit@v2
+        uses: github-actions-x/commit@v2.9 
         with:
           branch: main
           message: " Added operators list for v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${{ steps.dateformated.outputs.dateformated }} "
