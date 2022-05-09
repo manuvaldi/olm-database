@@ -121,9 +121,17 @@ jobs:
           cat $listfile
           rm -Rf *-rh; mkdir database-rh
    
+      - uses: actions/checkout@v3
+      - run: |
+          date > generated.txt
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m " Added operators list for v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${{ steps.dateformated.outputs.dateformated }} "
+          git push
  
-      - name: Commit & Push operator list             
-        uses: github-actions-x/commit@v2.9 
-        with:
-          branch: main
-          message: " Added operators list for v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${{ steps.dateformated.outputs.dateformated }} "
+#      - name: Commit & Push operator list             
+#        uses: github-actions-x/commit@v2.9 
+#        with:
+#          branch: main
+#          message: " Added operators list for v${{ matrix.ocversion }}-${{ matrix.catalog.catalog }}-${{ steps.dateformated.outputs.dateformated }} "
