@@ -117,6 +117,7 @@ jobs:
           sqlite3 database-rh/database/index.db "select operatorbundle_name from related_image group by operatorbundle_name;" 2>/dev/null >> $listfile
           cat $listfile
           rm -Rf *-rh; mkdir database-rh
+          git diff
    
 #      - uses: actions/checkout@v3
       - run: |
