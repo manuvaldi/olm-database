@@ -41,7 +41,10 @@ jobs:
           persist-credentials: false 
           fetch-depth: 0 
           ref: main
-
+          
+      - name: Fix repo
+        run:  git config --global --add safe.directory .
+        
       - name: Install CLI tools from OpenShift Mirror
         uses: redhat-actions/openshift-tools-installer@v1
         with:
